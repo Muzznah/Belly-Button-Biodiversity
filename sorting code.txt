@@ -1,0 +1,36 @@
+d3.json(url).then(function(sampleData){  
+    // Unpack json to lists
+    var otu_ids = sampleData.otu_ids; 
+    var sample_values = sampleData.sample_values;
+    var otu_labels = sampleData.otu_labels;
+    // Create a list of objects for each otu_id
+    otuData = [];
+    otuData = otu_ids.map((d, i) => {
+      return {otu_id: d, sample_value: sample_values[i], otu_label: otu_labels[i]}
+    });
+    // Sort data by sample_values and slice top 10 values
+    otuData.sort((a, b) => b.sample_value-a.sample_value);
+    otuData = otuData.slice(0,10);
+    // BUILD BUBBLE PLOT
+    // Build bubble plot variables
+    var trace1 = {
+      x: otuData.map(d => d.otu_id),
+      y: otuData.map(d => d.sample_value),
+      text: otuData.map(d => d.otu_label),
+      mode: 'markers',
+      marker: {
+        color: otuData.map(d => d.otu_id),
+        size: otuData.map(d => d.sample_value)
+      }
+    };
+    var data1 = [trace1];
+    var layout1 = {
+      xaxis: {
+        title: {
+          text: "OTU ID"
+        }
+      },
+      showlegend: false,
+      height: 600,
+      width: 1200
+    };
